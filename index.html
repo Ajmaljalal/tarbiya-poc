@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0d9488" />
+  <meta name="description" content="Tarbiya — barcode check-in & check-out for Sunday school." />
+  <title>Tarbiya · Sunday School</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main id="app">
+    <!-- ───────── Home ───────── -->
+    <section id="view-home" class="view view--active">
+      <header class="hero">
+        <div class="hero__brand">
+          <span class="hero__mark" aria-hidden="true">ت</span>
+          <div>
+            <h1 class="hero__title">Tarbiya</h1>
+            <p class="hero__subtitle">Sunday School Check-In</p>
+          </div>
+        </div>
+        <div class="hero__date" id="todayDate"></div>
+      </header>
+
+      <section class="stats" aria-label="Today's status">
+        <div class="stat">
+          <span class="stat__value" id="statCheckedIn">0</span>
+          <span class="stat__label">Checked in</span>
+        </div>
+        <div class="stat stat--divider">
+          <span class="stat__value" id="statTotal">0</span>
+          <span class="stat__label">Students</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value" id="statCheckedOut">0</span>
+          <span class="stat__label">Checked out</span>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button class="action action--primary" data-action="check-in" type="button">
+          <span class="action__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M19 12l-7 7-7-7" />
+            </svg>
+          </span>
+          <span class="action__title">Start Check-In</span>
+          <span class="action__desc">Scan barcodes to check students in</span>
+        </button>
+
+        <button class="action action--secondary" data-action="check-out" type="button">
+          <span class="action__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
+          </span>
+          <span class="action__title">Start Check-Out</span>
+          <span class="action__desc">Scan barcodes to check students out</span>
+        </button>
+
+        <button class="action action--ghost" data-action="students" type="button">
+          <span class="action__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0zM3 21a9 9 0 0 1 18 0" />
+            </svg>
+          </span>
+          <span class="action__title">Manage Students</span>
+          <span class="action__desc">View list & generate barcodes</span>
+        </button>
+      </div>
+
+      <p class="foot">Tarbiya PoC · v0.1</p>
+    </section>
+
+    <!-- ───────── Scanner ───────── -->
+    <section id="view-scanner" class="view">
+      <header class="topbar">
+        <button class="iconbtn" data-back type="button" aria-label="Back">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <h2 class="topbar__title" id="scannerTitle">Check-In</h2>
+        <button class="iconbtn" id="manualEntryBtn" type="button" aria-label="Manual entry">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h12"/></svg>
+        </button>
+      </header>
+
+      <div class="scanner" id="scannerStage">
+        <div id="reader" class="scanner__reader"></div>
+        <div class="scanner__overlay" aria-hidden="true">
+          <div class="scanner__frame">
+            <span class="scanner__beam"></span>
+          </div>
+          <p class="scanner__hint">Align the barcode inside the frame</p>
+        </div>
+      </div>
+
+      <section class="recent" aria-label="Recent scans">
+        <div class="recent__head">
+          <h3 class="recent__title">Recent scans</h3>
+          <span class="recent__count" id="recentCount">0</span>
+        </div>
+        <ul id="recentList" class="recent__list">
+          <li class="empty">No scans yet</li>
+        </ul>
+      </section>
+    </section>
+
+    <!-- ───────── Students ───────── -->
+    <section id="view-students" class="view">
+      <header class="topbar">
+        <button class="iconbtn" data-back type="button" aria-label="Back">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <h2 class="topbar__title">Students</h2>
+        <span class="topbar__spacer"></span>
+      </header>
+
+      <div class="filters">
+        <div class="searchbox-wrap">
+          <svg class="searchbox-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" id="studentSearch" class="searchbox searchbox--padded" placeholder="Search by name or ID…" autocomplete="off" />
+        </div>
+        <div class="chips" id="gradeChips" role="tablist">
+          <button class="chip chip--active" data-grade="all" type="button">All</button>
+          <button class="chip" data-grade="1" type="button">G1</button>
+          <button class="chip" data-grade="2" type="button">G2</button>
+          <button class="chip" data-grade="3" type="button">G3</button>
+          <button class="chip" data-grade="4" type="button">G4</button>
+          <button class="chip" data-grade="5" type="button">G5</button>
+        </div>
+      </div>
+
+      <ul id="studentList" class="students"></ul>
+    </section>
+
+    <!-- ───────── Barcode modal ───────── -->
+    <div id="barcodeModal" class="modal" hidden>
+      <div class="modal__sheet" role="dialog" aria-modal="true" aria-labelledby="barcodeName">
+        <button class="modal__close" data-close type="button" aria-label="Close">×</button>
+        <div class="modal__header">
+          <h3 id="barcodeName" class="modal__title"></h3>
+          <p id="barcodeMeta" class="modal__subtitle"></p>
+        </div>
+        <div class="barcode-wrap">
+          <svg id="barcodeSvg"></svg>
+        </div>
+        <p id="barcodeId" class="barcode-id"></p>
+        <div class="modal__actions">
+          <button class="btn btn--ghost" data-print type="button">Print</button>
+          <button class="btn btn--primary" data-close type="button">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── Manual entry modal ───────── -->
+    <div id="manualModal" class="modal" hidden>
+      <div class="modal__sheet" role="dialog" aria-modal="true" aria-labelledby="manualTitle">
+        <button class="modal__close" data-close type="button" aria-label="Close">×</button>
+        <h3 id="manualTitle" class="modal__title">Manual entry</h3>
+        <p class="modal__subtitle">Enter the student ID — e.g. <code>TRB-0007</code></p>
+        <input type="text" id="manualInput" class="searchbox" placeholder="TRB-0001" autocomplete="off" autocapitalize="characters" />
+        <div class="modal__actions">
+          <button class="btn btn--ghost" data-close type="button">Cancel</button>
+          <button class="btn btn--primary" id="manualSubmit" type="button">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <!-- Scanner & barcode libs -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
